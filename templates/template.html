@@ -1,0 +1,48 @@
+<!DOCTYPE>
+<html>
+    <head>
+        <script src="https://unpkg.com/infinite-scroll@3/dist/infinite-scroll.pkgd.min.js"></script>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <style>
+        .card-deck{
+            text-align: center;
+        }
+        .snapbottom{
+            top: 95%;
+        }
+        .palace{
+          height: 100px;
+          /*
+          margin-right: 100px;
+          position: relative;
+          object-fit: scale-down;
+          top: -135px;
+          */
+          filter: brightness(10);
+          -webkit-user-select: none;  /* Chrome all / Safari all */
+          -moz-user-select: none;     /* Firefox all */
+          -ms-user-select: none;      /* IE 10+ */
+          user-select: none;
+          pointer-events: none;
+        }
+    </style>
+    </head>
+    <body>
+        <div class="jumbotron jumbotron-fluid bg-dark text-white" style="padding: initial !important">
+            <div class="container d-flex flex-column">
+		          <h1 class="display-4">Wydarzenia Warszawa</h1>
+              <p class="lead">Strona pokazująca wydarzenia kulturalne mające miejsce w Warszawie. Aktualizowane codziennie.</p>
+              <p class="lead">Dane pobierane z oficjalnej strony <a href="http://kulturalna.warszawa.pl/" class="badge badge-primary">kulturalna.warszawa.pl</a></p>
+              <p class="lead"><a href="https://dev.uguu.space/" class="badge badge-secondary">Twórca</a> <a href="https://paypal.me/reyuu" class="badge badge-warning">Donacje</a></p>
+              <img src="./static/palace.png" class="palace align-self-end" />
+	          </div>
+          </div>
+          <img src="./static/palace.png" class="float-right palace" />
+          </div>
+        {% raw %}
+        <div class="container" id="event-feed" data-infinite-scroll='{ "path": "/get_page/{{#}}", "append": ".card-deck", "history": false}'>
+        {% endraw %}
+        {{ data|safe }}
+        </div>
+    </body>
+</html>
