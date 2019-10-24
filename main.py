@@ -17,6 +17,7 @@ highest_number = ""
 data = []
 
 def get_image_from_a_site(link):
+    """Fetches the event's thumbnail. Makes a single web request. Returns an URL or None."""
     data = []
     highest_number = []
     
@@ -48,18 +49,19 @@ def get_data_from_a_site(link):
         date = ""
         time = ""
         for i in soup:
-            if i.name == "h5":
+            if i.name == "h5":  # day header
                 date = i.get_text()
-            if i.name == "dl":
-                for j in i:
-                    if j.name == "dt":
+
+            if i.name == "dl":  # container for events in a given day
+                for j in i:  # iterates over its children
+                    if j.name == "dt":  # hour
                         time = j.get_text()
-                    if j.name == "dd":
+                    if j.name == "dd":  # container for events in a given hour
                         links = j.find_all("a")
                         for link in links:
                             my_link = "http://www.kulturalna.warszawa.pl/%s" % link["href"]
                             picture_link = get_image_from_a_site(my_link)
-                            if not(picture_link is None):
+                            if not (picture_link is None):
                                 thumbnail_link = picture_link.split(".")
                                 thumbnail_link[-2] += "_w180"
                                 thumbnail_link = ".".join(thumbnail_link)
@@ -71,6 +73,8 @@ def get_data_from_a_site(link):
                                       "time": time.strip(),
                                       "picture": picture_link,
                                       "thumbnail": thumbnail_link}]
+
+        # this code finds out the number of pages:
         pager = soup.find("div", class_="Pager").find_all("a")
         for i in pager:
             try:
@@ -82,10 +86,12 @@ def get_data_from_a_site(link):
         pprint(data)
         return (data, highest_number)
 
+# fetches the first page:
 data_i, highest_number_i = get_data_from_a_site("http://www.kulturalna.warszawa.pl/wydarzenia,,,,,,,,,,,,,,,1,1.html")
 data += list(data_i)
 highest_number = highest_number_i
 
+# fetches the remaining pages (all available):
 for i in range(2, highest_number):
     data_i, highest_number_i = get_data_from_a_site("http://www.kulturalna.warszawa.pl/wydarzenia,,,,,,,,,,,,,,,1,%s.html" % i)
     data += data_i
@@ -93,5 +99,6 @@ for i in range(2, highest_number):
 with open("output.json", "w") as f:
     f.write(json.dumps(data))
 
+# debug:
 pprint(data)
 print(highest_number)
